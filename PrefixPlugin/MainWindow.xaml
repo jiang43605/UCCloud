@@ -1,0 +1,15 @@
+﻿<Window x:Class="PrefixPlugin.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PrefixPlugin"
+        mc:Ignorable="d"
+         Title="链接前缀增强插件" Height="138" Width="383" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
+    <Grid>
+        <Label x:Name="label" Content="通过此插件你可以在提交链接之前为它们添加链接前缀" HorizontalAlignment="Left" Margin="36,10,0,0" VerticalAlignment="Top" Foreground="Gray" Width="323" Height="24"/>
+        <TextBox x:Name="txtprefix" HorizontalAlignment="Left" Height="23" Margin="98,59,0,0" TextWrapping="NoWrap" Text="magnet:?xt=urn:btih:" VerticalAlignment="Top" VerticalContentAlignment="Center" Width="120" />
+        <CheckBox x:Name="checkBox" Content="勾选生效" HorizontalAlignment="Left" Margin="246,63,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="label1" Content="前缀：" HorizontalAlignment="Left" Margin="54,59,0,0" VerticalAlignment="Top" Height="23"/>
+    </Grid>
+</Window>

@@ -1,0 +1,96 @@
+﻿<Window x:Class="PlayOrDownloadPlugin.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PlayOrDownloadPlugin"
+        mc:Ignorable="d"
+        Title="简易下载或播放器插件" Height="440" Width="551" ResizeMode="CanResizeWithGrip"   WindowStartupLocation="CenterScreen" MinHeight="440" MinWidth="551" StateChanged="Window_StateChanged">
+    <Window.Resources>
+        <Style x:Key="lablehead" TargetType="Label">
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="Wheat"/>
+                    <Setter Property="Content" Value="使用第三方工具播放"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+    <Grid x:Name="maingrid">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="28*"/>
+            <ColumnDefinition Width="478*"/>
+            <ColumnDefinition Width="37*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="48*"/>
+            <RowDefinition Height="39*"/>
+            <RowDefinition Height="22*"/>
+            <RowDefinition Height="266*"/>
+            <RowDefinition Height="34*"/>
+        </Grid.RowDefinitions>
+        <!--1标题-->
+        <Label x:Name="labelHead" Content="提供简易的播放和下载功能" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="Gray" Style="{StaticResource lablehead}"  Grid.Column="1">
+            <Label.ContextMenu>
+                <ContextMenu>
+                    <MenuItem x:Name="lablecontextmenu_about" Header="关于"/>
+                    <MenuItem x:Name="lablecontextmenu_1" Header="重置第三方播放器"/>
+                </ContextMenu>
+            </Label.ContextMenu>
+        </Label>
+
+        <!--2控制版块-->
+        <Grid x:Name="GridControl" Grid.Row="1" Grid.Column="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="90*"/>
+                <ColumnDefinition Width="149*"/>
+                <ColumnDefinition Width="75*"/>
+                <ColumnDefinition Width="82*"/>
+                <ColumnDefinition Width="82*"/>
+            </Grid.ColumnDefinitions>
+            <Label x:Name="label1" Content="已有离线资源：" Margin="0" Foreground="Gray" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" />
+            <ComboBox x:Name="cbox" Margin="0,7" MaxHeight="25" Grid.Column="1"/>
+            <CheckBox x:Name="checkboxIshigh" VerticalContentAlignment="Center" Content="高质量" ToolTip="勾选后将优先高质量的资源下载" Margin="7" Grid.Column="2" MinWidth="56" />
+            <Button x:Name="btnPlay" MaxHeight="25" Content="播放" Margin="5,7" MinWidth="70"   Grid.Column="3" />
+            <Button x:Name="btndown" MaxHeight="25" Content="下载" MinWidth="70" Margin="5,7"  Grid.Column="4"/>
+        </Grid>
+
+        <!--3下载进度条-->
+        <Grid x:Name="GridPb" Grid.Row="2" Grid.Column="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="407*"/>
+                <ColumnDefinition Width="71*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition Height="Auto" MinHeight="4"/>
+            </Grid.RowDefinitions>
+            <ProgressBar x:Name="Pb" ToolTip="下载进度条" Margin="0,7"  />
+            <Label x:Name="lbpb" Content="0%[0B]" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="8" Foreground="Tan" Grid.Column="1" Margin="0" />
+            <Separator Background="Gray" Margin="0" VerticalAlignment="Top" Grid.Row="1" Grid.ColumnSpan="2"/>
+        </Grid>
+
+        <!--4视频进度条和拖动条-->
+        <Grid x:Name="GridPlay" Grid.Row="4" Grid.Column="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="401*"/>
+                <ColumnDefinition Width="77*"/>
+            </Grid.ColumnDefinitions>
+            <ProgressBar x:Name="Pbonsliderdisplaybuffer" BorderThickness="0"  Maximum="1" Height="17" VerticalAlignment="Center" Width="{Binding ElementName=mediaElement,Path=Width}" Foreground="{DynamicResource {x:Static SystemColors.WindowFrameBrushKey}}"/>
+            <ProgressBar x:Name="Pbonsliderdisplay" BorderThickness="0" Height="17" Width="{Binding ElementName=mediaElement,Path=Width}" VerticalAlignment="Center" Maximum="{Binding ElementName=sliderPosition,Path=Maximum}" Value="{Binding ElementName=sliderPosition,Path=Value}" Foreground="#FF018574" Background="{x:Null}" />
+            <Slider x:Name="sliderPosition" Height="17" VerticalAlignment="Center" BorderThickness="0" Width="{Binding ElementName=mediaElement,Path=Width}"  Style="{StaticResource SliderStyleDisplay}" PreviewMouseLeftButtonUp="sliderPosition_PreviewMouseLeftButtonUp" PreviewMouseLeftButtonDown="sliderPosition_PreviewMouseLeftButtonDown" KeyDown="sliderPosition_KeyDown" />
+            <Label x:Name="lbplay" Content="0:0:0/0:0:0"     HorizontalContentAlignment="Center" Margin="0" FontSize="8" Foreground="Teal" VerticalContentAlignment="Center" Grid.Column="1" />
+        </Grid>
+
+        <!--5音量调节-->
+        <DockPanel x:Name="DockPanelVol" Margin="0" Grid.Row="3" Grid.Column="2">
+            <Label x:Name="label2" Content="音" HorizontalAlignment="Center" DockPanel.Dock="Bottom" Foreground="DarkRed" FontSize="20" FontFamily="华文行楷" />
+            <Slider x:Name="sliderVolume"  MinWidth="21"  Orientation="Vertical" DockPanel.Dock="Bottom" MinHeight="94" HorizontalAlignment="Center" Maximum="1" Value="{ Binding ElementName=mediaElement,Path=Volume,Mode=TwoWay}"/>
+        </DockPanel>
+
+        <!--6视频控件-->
+        <Label x:Name="lbuffer" Content="正在缓冲中..." HorizontalContentAlignment="Center" Margin="0"  Foreground="DodgerBlue" VerticalContentAlignment="Center" FontSize="20" Visibility="Hidden" Grid.Row="3" Grid.Column="1"/>
+        <Rectangle x:Name="RectanglePlay" Fill="{x:Null}" Margin="0" Stroke="Bisque" Grid.Row="3" Grid.Column="1"/>
+        <MediaElement x:Name="mediaElement" Focusable="True" Margin="2" MediaOpened="mediaElement_MediaOpened" Stretch="Fill"  MouseLeftButtonUp="mediaElement_MouseLeftButtonUp" ToolTip="单击暂停" MediaFailed="mediaElement_MediaFailed" MediaEnded="mediaElement_MediaEnded" Grid.Row="3" Grid.Column="1" />
+    </Grid>
+</Window>
