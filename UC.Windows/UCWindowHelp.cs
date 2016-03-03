@@ -34,7 +34,7 @@ namespace UC.Windows
         }
 
         /// <summary>
-        /// 根据IEnumerable<IUCWindowPlugin>创建对应的Button
+        /// 根据IEnumerable<IUCWindowPlugin/>创建对应的Button
         /// </summary>
         /// <returns></returns>
         internal static IEnumerable<Control> CreatButtons(IEnumerable<IUCWindowPlugin> icws)
@@ -86,7 +86,7 @@ namespace UC.Windows
                 if (Path.GetExtension(file) != ".exe" && Path.GetExtension(file) != ".dll") continue;
 
                 Assembly assembly = Assembly.LoadFile(file);
-                Type[] types = assembly.GetTypes();
+                var types = assembly.GetTypes();
                 foreach (Type type in types)
                 {
                     if (!typeof(IUCWindowPlugin).IsAssignableFrom(type)) continue;
