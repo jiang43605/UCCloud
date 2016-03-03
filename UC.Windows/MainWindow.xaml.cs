@@ -86,59 +86,7 @@ namespace UC.Windows
         /// <param name="e"></param>
         private void btnlogin_Click(object sender, RoutedEventArgs e)
         {
-            this.btnlogin.Dispatcher.BeginInvoke(new Action(() =>
-            {
-                if (this.imagecaptcha.Source == null) return;
-
-                if (string.IsNullOrEmpty(this.txtusername.Text) || string.IsNullOrEmpty(this.txtPassword.Password) ||
-                    string.IsNullOrEmpty(this.txtcaptcha.Text))
-                {
-                    MessageBox.Show("帐号或者密码或者验证码不能为空！");
-                    return;
-                }
-
-                this._ucLogin.Username = this.txtusername.Text;
-                this._ucLogin.Password = this.txtPassword.Password;
-                this.btnlogin.IsEnabled = false;
-
-                // 登录
-                var loginstatus = this._ucLogin.Login(this.txtcaptcha.Text);
-
-                switch (loginstatus)
-                {
-                    case LoginStatus.InvalidLoginnameOrPassword:
-                        {
-                            MessageBox.Show("帐号或者密码错误");
-                            this.SetBytesToImageAsyn(this._ucLogin.ErrorCaptcha());
-                            this.btnlogin.IsEnabled = true;
-                            return;
-                        }
-                    case LoginStatus.InvalidCaptcha:
-                        {
-                            MessageBox.Show("验证码不正确");
-                            this.SetBytesToImageAsyn(this._ucLogin.ErrorCaptcha());
-                            this.btnlogin.IsEnabled = true;
-                            this.txtcaptcha.Clear();
-                            return;
-                        }
-                    case LoginStatus.Success:
-                        {
-                            this.lblogininfo.Content = this._ucLogin.LoginResultMsg.Name + "用户已经成功登录！";
-                            this.logincontrol.Visibility = Visibility.Hidden;
-                            this.maincontrol.Visibility = Visibility.Visible;
-                            this._ucDownload = new UCDownload(this._ucLogin.HttpWeb);
-                            this.btnlogin.IsEnabled = true;
-                            UCWindowHelp.InitializeIUCWindowPlugin(this._iUcWindowPlugins, this._ucLogin.HttpWeb);
-                            return;
-                        }
-                    default:
-                        {
-                            MessageBox.Show("发生未知错误！");
-                            this.btnlogin.IsEnabled = true;
-                            return;
-                        }
-                }
-            }));
+           
         }
         /// <summary>
         /// 单击验证码图片事件
