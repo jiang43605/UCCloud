@@ -19,7 +19,7 @@
             <Setter Property="VerticalContentAlignment" Value="Center"/>
         </Style>
     </Window.Resources>
-    <Grid>
+    <Grid x:Name="MianGrid">
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
             <ColumnDefinition/>
@@ -27,13 +27,13 @@
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition/>
-            <RowDefinition/>
-            <RowDefinition/>
-            <RowDefinition/>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="50"/>
         </Grid.RowDefinitions>
         <Label x:Name="Lbhead" Grid.Column="0" Grid.ColumnSpan="4" HorizontalContentAlignment="Center" Content="这是一个方便添加UC网盘离线下载的软件" FontWeight="Bold" FontSize="20" FontFamily="华文楷体"/>
-        <Rectangle Height="1" Fill="Gray" Grid.ColumnSpan="4" VerticalAlignment="Bottom" Margin="30,80,30,0"/>
+        <Rectangle Height="1" Fill="Gray" Grid.ColumnSpan="4" VerticalAlignment="Bottom" Margin="30,0"/>
         <UserControl x:Name="maincontrol" Grid.ColumnSpan="4" Grid.Row="1" Grid.RowSpan="3" Visibility="Hidden">
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -72,7 +72,7 @@
             </Grid>
         </UserControl>
 
-        <UserControl x:Name="logincontrol" Grid.ColumnSpan="4" Grid.Row="1" Grid.RowSpan="3" Visibility="Visible">
+        <UserControl x:Name="logincontrol" Grid.ColumnSpan="4" Grid.Column="0" Grid.Row="1" Grid.RowSpan="3" Visibility="Hidden">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition/>
@@ -98,16 +98,16 @@
                         <RowDefinition/>
                     </Grid.RowDefinitions>
                     <Label x:Name="lbuserPassword" Content="密码："  HorizontalContentAlignment="Right" VerticalContentAlignment="Top" Margin="0"  />
-                    <PasswordBox x:Name="txtPassword" Margin="0,0,0,17" VerticalContentAlignment="Center" Grid.Column="1" />
+                    <PasswordBox x:Name="txtPassword" Margin="0,0,0,17" VerticalContentAlignment="Center" Grid.Row="0"
+                                 Grid.Column="1" />
 
-                    <TextBox x:Name="txtcaptcha"   Margin="50,9,0,10"  Grid.Row="1" Text="请输入验证码" Foreground="Gray" GotFocus="txtcaptcha_GotFocus" LostFocus="txtcaptcha_LostFocus"/>
+                    <TextBox x:Name="txtcaptcha"   Margin="50,9,0,10"  Grid.Row="1" Grid.Column="0" Text="请输入验证码" Foreground="Gray" GotFocus="txtcaptcha_GotFocus" LostFocus="txtcaptcha_LostFocus"/>
                     <Image x:Name="imagecaptcha" Margin="0,9,0,10" Grid.Row="1" Stretch="Fill" PreviewMouseLeftButtonUp="imagecaptcha_PreviewMouseLeftButtonUp" ToolTip="点击刷新验证码" Grid.Column="2" />
                 </Grid>
 
-                <Button x:Name="btnlogin" Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="2" Margin="30" Content="登录" Click="btnlogin_Click"/>
+
             </Grid>
         </UserControl>
-        <WebBrowser x:Name="UcWebBrowser" HorizontalAlignment="Left" Height="168" Grid.Row="1" Grid.RowSpan="2" VerticalAlignment="Top" Width="526" Grid.ColumnSpan="4"/>
-
+        <Button x:Name="btnlogin" Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="3" Height="20" Content="登录" Click="btnlogin_Click"/>
     </Grid>
 </Window>

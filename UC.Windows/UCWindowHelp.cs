@@ -6,6 +6,8 @@ using System.Net;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
+using CefSharp;
+using CefSharp.Wpf;
 using Chengf;
 using IUCWindow;
 
@@ -17,6 +19,24 @@ namespace UC.Windows
     /// </summary>
     internal static class UCWindowHelp
     {
+        /// <summary>
+        /// 创建一个ChromiumWebBrowser浏览器
+        /// </summary>
+        /// <param name="cookieContainer"></param>
+        /// <returns></returns>
+        internal static ChromiumWebBrowser CreatChromiumWebBrowser(CookieContainer cookieContainer)
+        {
+            ChromiumWebBrowser webBrowser = new ChromiumWebBrowser();
+            webBrowser.Address = "http://disk.yun.uc.cn/";
+            webBrowser.FrameLoadEnd += (sender, e) =>
+            {
+                if (e.Browser.IsLoading) return;
+
+                var uccookievisitor = new UCCookieVisitor(cookieContainer.Add);
+                Cef.GetGlobalCookieManager().VisitAllCookies(uccookievisitor);
+            };
+            return webBrowser;
+        }
         /// <summary>
         /// 创建一个TextBox用于ListBox
         /// </summary>
