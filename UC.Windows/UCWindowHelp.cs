@@ -22,19 +22,13 @@ namespace UC.Windows
         /// <summary>
         /// 创建一个ChromiumWebBrowser浏览器
         /// </summary>
-        /// <param name="cookieContainer"></param>
+        /// <param name="endEventHandler"></param>
         /// <returns></returns>
-        internal static ChromiumWebBrowser CreatChromiumWebBrowser(CookieContainer cookieContainer)
+        internal static ChromiumWebBrowser CreatChromiumWebBrowser(EventHandler<FrameLoadEndEventArgs> endEventHandler )
         {
             ChromiumWebBrowser webBrowser = new ChromiumWebBrowser();
             webBrowser.Address = "http://disk.yun.uc.cn/";
-            webBrowser.FrameLoadEnd += (sender, e) =>
-            {
-                if (e.Browser.IsLoading) return;
-
-                var uccookievisitor = new UCCookieVisitor(cookieContainer.Add);
-                Cef.GetGlobalCookieManager().VisitAllCookies(uccookievisitor);
-            };
+            webBrowser.FrameLoadEnd += endEventHandler;
             return webBrowser;
         }
         /// <summary>
@@ -59,6 +53,8 @@ namespace UC.Windows
         /// <returns></returns>
         internal static IEnumerable<Control> CreatButtons(IEnumerable<IUCWindowPlugin> icws)
         {
+            if (icws == null) return new List<Control>();
+
             List<Control> controls = new List<Control>();
 
             foreach (IUCWindowPlugin icw in icws)
