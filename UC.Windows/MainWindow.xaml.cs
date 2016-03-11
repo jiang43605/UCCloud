@@ -5,9 +5,12 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using CefSharp;
+using CefSharp.Wpf;
 using IUCWindow;
 using UCCloudDisc;
 
@@ -24,18 +27,20 @@ namespace UC.Windows
         private IEnumerable<IUCWindowPlugin> _iUcWindowPlugins;
         private readonly Queue<TaskModel> _updataTaskModels = new Queue<TaskModel>();             // 记录需要更新TaskModel的实例
         private readonly Dictionary<string, int> _itemDictionary = new Dictionary<string, int>(); // ListBox资源字典
-        private const string SerializePath = "CookieContainer.dat";                     // Cookie保存路径
+        private const string SerializePath = "CookieContainer.dat";                               // Cookie保存路径
+        private ChromiumWebBrowser _chromeBrowser;
         public MainWindow()
         {
             InitializeComponent();
-           // AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+            Cef.Initialize();
+            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
         }
         private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
             if (e.IsTerminating)
-                MessageBox.Show("发生致命错误，请重启程序！");
+                MessageBox.Show("发生致命错误，将重启程序！");
             Exception ex = e.ExceptionObject as Exception;
-            MessageBox.Show(ex.Message);
+            MessageBox.Show(ex?.Message);
         }
         /// <summary>
         /// 窗体Load
@@ -55,29 +60,33 @@ namespace UC.Windows
         /// </summary>
         public void InitializeCode()
         {
-            // 一些初始化任务
-            Application.Current.Dispatcher.BeginInvoke(new Action(() =>
-            {
-                // 读取插件
-                this._iUcWindowPlugins = UCWindowHelp.ReadPlugin(_pluginPath);
-                this.plugincomboBox.ItemsSource = UCWindowHelp.CreatButtons(this._iUcWindowPlugins);
+            // 读取插件
+            this._iUcWindowPlugins = UCWindowHelp.ReadPlugin(_pluginPath);
+            this.plugincomboBox.ItemsSource = UCWindowHelp.CreatButtons(_iUcWindowPlugins);
 
-                this._ucLogin = new UCLogin();
-                UCHelp.BinaryDeserializeCookieContainer(SerializePath, ref this._ucLogin);
-                if (this._ucLogin.IsLogin)
-                {
-                    // cookiecontaniner赋值后已经登录
-                    this.lblogininfo.Content = this._ucLogin.LoginResultMsg.Name + "用户已经成功登录！";
-                    this.logincontrol.Visibility = Visibility.Hidden;
-                    this.maincontrol.Visibility = Visibility.Visible;
-                    this._ucDownload = new UCDownload(this._ucLogin.HttpWeb);
-                    UCWindowHelp.InitializeIUCWindowPlugin(this._iUcWindowPlugins, this._ucLogin.HttpWeb);
-                    return;
-                }
-                this.logincontrol.IsEnabled = true;
-                byte[] bytes = this._ucLogin.GetCaptchaBytes();
-                this.SetBytesToImageAsyn(bytes);
-            }));
+            this._ucLogin = new UCLogin();
+            UCHelp.BinaryDeserializeCookieContainer(SerializePath, ref this._ucLogin);
+            if (this._ucLogin.IsLogin)
+            {
+                //cookiecontaniner赋值后已经登录
+                this.maincontrol.Visibility = Visibility.Visible;
+                this.Width = 634;
+                this.Height = this.MinHeight;
+
+                this.lblogininfo.Content = "用户：" + this._ucLogin.LoginResultMsg.Name;
+                this._ucDownload = new UCDownload(this._ucLogin.HttpWeb);
+                UCWindowHelp.InitializeIUCWindowPlugin(this._iUcWindowPlugins, this._ucLogin.HttpWeb);
+                return;
+            }
+
+            // 存在问题
+            InitiChromeBrowser();
+            this.MianGrid.Children.Add(_chromeBrowser);
+            Grid.SetColumn(_chromeBrowser, 0);
+            Grid.SetColumnSpan(_chromeBrowser, 4);
+            Grid.SetRow(_chromeBrowser, 1);
+            Grid.SetRowSpan(_chromeBrowser, 2);
+
         }
         /// <summary>
         /// 登录按钮
@@ -86,59 +95,21 @@ namespace UC.Windows
         /// <param name="e"></param>
         private void btnlogin_Click(object sender, RoutedEventArgs e)
         {
-            this.btnlogin.Dispatcher.BeginInvoke(new Action(() =>
+            if (!this._ucLogin.IsLogin)
             {
-                if (this.imagecaptcha.Source == null) return;
+                //MessageBox.Show("数据格式不正确");
+                return;
+            }
 
-                if (string.IsNullOrEmpty(this.txtusername.Text) || string.IsNullOrEmpty(this.txtPassword.Password) ||
-                    string.IsNullOrEmpty(this.txtcaptcha.Text))
-                {
-                    MessageBox.Show("帐号或者密码或者验证码不能为空！");
-                    return;
-                }
+            this.maincontrol.Visibility = Visibility.Visible;
+            this.Width = 634;
+            this.Height = this.MinHeight;
 
-                this._ucLogin.Username = this.txtusername.Text;
-                this._ucLogin.Password = this.txtPassword.Password;
-                this.btnlogin.IsEnabled = false;
-
-                // 登录
-                var loginstatus = this._ucLogin.Login(this.txtcaptcha.Text);
-
-                switch (loginstatus)
-                {
-                    case LoginStatus.InvalidLoginnameOrPassword:
-                        {
-                            MessageBox.Show("帐号或者密码错误");
-                            this.SetBytesToImageAsyn(this._ucLogin.ErrorCaptcha());
-                            this.btnlogin.IsEnabled = true;
-                            return;
-                        }
-                    case LoginStatus.InvalidCaptcha:
-                        {
-                            MessageBox.Show("验证码不正确");
-                            this.SetBytesToImageAsyn(this._ucLogin.ErrorCaptcha());
-                            this.btnlogin.IsEnabled = true;
-                            this.txtcaptcha.Clear();
-                            return;
-                        }
-                    case LoginStatus.Success:
-                        {
-                            this.lblogininfo.Content = this._ucLogin.LoginResultMsg.Name + "用户已经成功登录！";
-                            this.logincontrol.Visibility = Visibility.Hidden;
-                            this.maincontrol.Visibility = Visibility.Visible;
-                            this._ucDownload = new UCDownload(this._ucLogin.HttpWeb);
-                            this.btnlogin.IsEnabled = true;
-                            UCWindowHelp.InitializeIUCWindowPlugin(this._iUcWindowPlugins, this._ucLogin.HttpWeb);
-                            return;
-                        }
-                    default:
-                        {
-                            MessageBox.Show("发生未知错误！");
-                            this.btnlogin.IsEnabled = true;
-                            return;
-                        }
-                }
-            }));
+            this._ucDownload = new UCDownload(this._ucLogin.HttpWeb);
+            UCWindowHelp.InitializeIUCWindowPlugin(this._iUcWindowPlugins, this._ucLogin.HttpWeb);
+            if (this._chromeBrowser == null) return;
+            this._chromeBrowser.Visibility = Visibility.Hidden;
+            this._chromeBrowser.Dispose();
         }
         /// <summary>
         /// 单击验证码图片事件
@@ -268,6 +239,8 @@ namespace UC.Windows
         {
             if (this._ucLogin?.IsLogin == true)
                 UCHelp.BinarySerializeCookieContainer(SerializePath, this._ucLogin.HttpWeb.HttpCookieContainer);
+            this._chromeBrowser.Dispose();
+            Cef.Shutdown();
             Environment.Exit(0);
         }
         /// <summary>
@@ -281,14 +254,37 @@ namespace UC.Windows
             if (mbr == MessageBoxResult.No) return;
 
             File.Delete(SerializePath);
-            this.logincontrol.Visibility = Visibility.Visible;
             this.maincontrol.Visibility = Visibility.Hidden;
-            this.logincontrol.IsEnabled = true;
             this._ucLogin.LogOut();
-            byte[] bytes = this._ucLogin.GetCaptchaBytes();
-            SetBytesToImageAsyn(bytes);
+            Cef.GetGlobalCookieManager().DeleteCookiesAsync(string.Empty, string.Empty).Wait();
+
+            InitiChromeBrowser();
+            this.MianGrid.Children.Add(_chromeBrowser);
+            Grid.SetColumn(_chromeBrowser, 0);
+            Grid.SetColumnSpan(_chromeBrowser, 4);
+            Grid.SetRow(_chromeBrowser, 1);
+            Grid.SetRowSpan(_chromeBrowser, 2);
+
+            this.Width = 535;
+            this.Height = 650;
         }
 
+        private void InitiChromeBrowser()
+        {
+            _chromeBrowser = UCWindowHelp.CreatChromiumWebBrowser((sender, e) =>
+            {
+                if (e.Browser.IsLoading) { return; }
+
+                var uccookievisitor = new UCCookieVisitor(this._ucLogin.HttpWeb.HttpCookieContainer.Add);
+                Cef.GetGlobalCookieManager().VisitAllCookies(uccookievisitor);
+
+                if (!File.Exists("UC.js")) return;
+                var scriptext = File.ReadAllText("UC.js");
+                ((ChromiumWebBrowser) sender).ExecuteScriptAsync(scriptext);
+
+                this.Dispatcher.BeginInvoke(new Action(() => { btnlogin_Click(null, null); }));
+            });
+        }
         /// <summary>
         /// 验证码框获得焦点事件
         /// </summary>

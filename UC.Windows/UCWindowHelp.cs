@@ -6,6 +6,8 @@ using System.Net;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
+using CefSharp;
+using CefSharp.Wpf;
 using Chengf;
 using IUCWindow;
 
@@ -17,6 +19,18 @@ namespace UC.Windows
     /// </summary>
     internal static class UCWindowHelp
     {
+        /// <summary>
+        /// 创建一个ChromiumWebBrowser浏览器
+        /// </summary>
+        /// <param name="endEventHandler"></param>
+        /// <returns></returns>
+        internal static ChromiumWebBrowser CreatChromiumWebBrowser(EventHandler<FrameLoadEndEventArgs> endEventHandler )
+        {
+            ChromiumWebBrowser webBrowser = new ChromiumWebBrowser();
+            webBrowser.Address = "http://disk.yun.uc.cn/";
+            webBrowser.FrameLoadEnd += endEventHandler;
+            return webBrowser;
+        }
         /// <summary>
         /// 创建一个TextBox用于ListBox
         /// </summary>
@@ -34,11 +48,13 @@ namespace UC.Windows
         }
 
         /// <summary>
-        /// 根据IEnumerable<IUCWindowPlugin>创建对应的Button
+        /// 根据IEnumerable<IUCWindowPlugin/>创建对应的Button
         /// </summary>
         /// <returns></returns>
         internal static IEnumerable<Control> CreatButtons(IEnumerable<IUCWindowPlugin> icws)
         {
+            if (icws == null) return new List<Control>();
+
             List<Control> controls = new List<Control>();
 
             foreach (IUCWindowPlugin icw in icws)
@@ -86,7 +102,7 @@ namespace UC.Windows
                 if (Path.GetExtension(file) != ".exe" && Path.GetExtension(file) != ".dll") continue;
 
                 Assembly assembly = Assembly.LoadFile(file);
-                Type[] types = assembly.GetTypes();
+                var types = assembly.GetTypes();
                 foreach (Type type in types)
                 {
                     if (!typeof(IUCWindowPlugin).IsAssignableFrom(type)) continue;
