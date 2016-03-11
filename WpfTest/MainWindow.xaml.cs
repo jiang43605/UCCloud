@@ -35,21 +35,20 @@ namespace WpfTest
     public partial class MainWindow : Window
     {
         private IUCWindowPlugin _icPlugin;
-        private ChromiumWebBrowser chromium;
         public MainWindow()
         {
             InitializeComponent();
-            Cef.Initialize();
-            chromium = new ChromiumWebBrowser();
-            chromium.Address = "http://disk.yun.uc.cn/";
-            chromium.FrameLoadEnd += Chromium_FrameLoadEnd;
-            this.Gridbrower.Children.Add(chromium);
         }
 
         private void button_Click(object sender, RoutedEventArgs e)
         {
-            //this._icPlugin.ShowWindow();         
+            //this._icPlugin.ShowWindow();
+            Cef.Initialize();
+            ChromiumWebBrowser chromium = new ChromiumWebBrowser();
+            chromium.Address = "http://disk.yun.uc.cn/";
+            chromium.FrameLoadEnd += Chromium_FrameLoadEnd;
 
+            this.Gridbrower.Children.Add(chromium);
         }
 
         private void Chromium_LoadingStateChanged(object sender, LoadingStateChangedEventArgs e)
@@ -68,14 +67,11 @@ namespace WpfTest
                     sb.AppendLine(nameValue.Item1 + " = " + nameValue.Item2);
                 this.Dispatcher.BeginInvoke(new MethodInvoker(() =>
                 {
-                   // System.Windows.MessageBox.Show(sb.ToString());
+                    System.Windows.MessageBox.Show(sb.ToString());
                 }));
             });
 
             Cef.GetGlobalCookieManager().VisitAllCookies(visitor);
-
-            var scriptext = System.IO.File.ReadAllText("UC.js");
-            chromium.ExecuteScriptAsync(scriptext);
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -91,11 +87,7 @@ namespace WpfTest
 
         private void Window_Closed(object sender, EventArgs e)
         {
-            chromium.Dispose();
 
-            Cef.Shutdown();
-
-            Environment.Exit(0);
         }
     }
 }

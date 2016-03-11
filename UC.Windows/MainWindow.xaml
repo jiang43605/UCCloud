@@ -6,7 +6,7 @@
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
         xmlns:local="clr-namespace:UC.Windows"
         mc:Ignorable="d"
-       x:Name="mianwindow" Title="UC网盘离线下载器" Height="600" Width="535" Loaded="Window_Loaded" WindowStartupLocation="CenterScreen"  MinWidth="534" MinHeight="367.041" ResizeMode="CanMinimize" Closed="mianwindow_Closed">
+       x:Name="mianwindow" Title="UC网盘离线下载器" Height="367.041" Width="534.176" Loaded="Window_Loaded" WindowStartupLocation="CenterScreen"  MinWidth="534.176" MinHeight="367.041" Closed="mianwindow_Closed">
     <Window.Resources>
         <Style x:Key="listbox" TargetType="ListBoxItem">
         </Style>
@@ -19,7 +19,7 @@
             <Setter Property="VerticalContentAlignment" Value="Center"/>
         </Style>
     </Window.Resources>
-    <Grid x:Name="MianGrid">
+    <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
             <ColumnDefinition/>
@@ -27,13 +27,14 @@
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="50"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
         </Grid.RowDefinitions>
         <Label x:Name="Lbhead" Grid.Column="0" Grid.ColumnSpan="4" HorizontalContentAlignment="Center" Content="这是一个方便添加UC网盘离线下载的软件" FontWeight="Bold" FontSize="20" FontFamily="华文楷体"/>
-        <Rectangle Height="1" Fill="Gray" Grid.Row="0" Grid.ColumnSpan="4" VerticalAlignment="Bottom" Margin="30,0"/>
-        <UserControl x:Name="maincontrol" Grid.ColumnSpan="4" Grid.Column="0" Grid.Row="1" Grid.RowSpan="3" Visibility="Hidden">
+        <Rectangle Height="1" Fill="Gray" Grid.ColumnSpan="4" VerticalAlignment="Bottom" Margin="30,80,30,0"/>
+        <UserControl x:Name="maincontrol" Grid.ColumnSpan="4" Grid.Row="1" Grid.RowSpan="3" Visibility="Hidden">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="132*"/>
@@ -42,43 +43,36 @@
                     <ColumnDefinition Width="49*"/>
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="40"/>
+                    <RowDefinition Height="83*"/>
                     <RowDefinition Height="85*"/>
                     <RowDefinition Height="84*"/>
                 </Grid.RowDefinitions>
 
-                <Label x:Name="lblogininfo" Content=""   HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="15" Foreground="Green"/>
-                <TextBox x:Name="txtlink" Height="30" VerticalAlignment="Center" Grid.Row="0" Text="" Grid.Column="1"/>
-                <Button x:Name="btnAddTask" Content="添加" Grid.Column="2" Height="30" VerticalAlignment="Center" Grid.Row="0" Click="btnAddTask_Click" />
+                <Label x:Name="lblogininfo" Content=""  Margin="0,0,0,60" Grid.ColumnSpan="4" HorizontalContentAlignment="Center" FontSize="8" Foreground="Green"/>
+                <TextBox x:Name="txtlink" Margin="0,41,0,20" Grid.Row="0" Text="" Grid.Column="1"/>
+                <Button x:Name="btnAddTask" Content="添加" Grid.Column="2" Margin="5,41,0,20" Grid.Row="0" Click="btnAddTask_Click" />
                 <ListBox x:Name="listBox" Margin="0,0,0,18" Grid.Row="1" Grid.RowSpan="2"  Grid.ColumnSpan="2" Grid.Column="1" />
-                <Grid Margin="0,0,0,18" Grid.Row="1" Grid.RowSpan="2" Grid.Column="0">
+
+                <Grid Grid.Row="1">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="42*"/>
+                        <RowDefinition Height="43*"/>
                     </Grid.RowDefinitions>
-                    <TextBlock Padding="10" Text="请在“添加”的左侧输入框中输入下载地址，地址可为[迅雷/HTTP/FTP/磁链接]等常见下载格式" Foreground="Gray" TextWrapping="Wrap" />
-                    <Grid Grid.Row="1" Grid.Column="0">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="42*"/>
-                            <RowDefinition Height="43*"/>
-                        </Grid.RowDefinitions>
-                        <Label Content="功能插件" Margin="0,0,0,0" HorizontalContentAlignment="Center" VerticalContentAlignment="Bottom" Grid.Row="0" />
-                        <ComboBox x:Name="plugincomboBox" Width="120" Height="30" VerticalAlignment="Top" Grid.Row="1" IsReadOnly="True"/>
-                    </Grid>
-                    <Grid Grid.Row="2">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="42*"/>
-                            <RowDefinition Height="30"/>
-                        </Grid.RowDefinitions>
-                        <Label x:Name="lbchanggeuser" Grid.Row="0" Content="更换帐号" Margin="0,0,0,0" HorizontalContentAlignment="Center" VerticalContentAlignment="Bottom" />
-                        <Button x:Name="btnlogout" Width="120" Height="30" VerticalAlignment="Bottom" Grid.Row="1" Content="退出" Click="btnlogout_Click" />
-                    </Grid>
+                    <Label Content="功能插件" Margin="0,0,0,0" HorizontalContentAlignment="Center" VerticalContentAlignment="Bottom" Grid.Row="0" />
+                    <ComboBox x:Name="plugincomboBox" Margin="10,0,10,18" Grid.Row="1" IsReadOnly="True"/>
+                </Grid>
+                <Grid Grid.Row="2">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="42*"/>
+                        <RowDefinition Height="43*"/>
+                    </Grid.RowDefinitions>
+                    <Label x:Name="lbchanggeuser" Grid.Row="0" Content="更换帐号" Margin="0,0,0,0" HorizontalContentAlignment="Center" VerticalContentAlignment="Bottom" />
+                    <Button x:Name="btnlogout" Margin="10,0,10,18" Grid.Row="1" Content="退出" Click="btnlogout_Click" />
                 </Grid>
             </Grid>
         </UserControl>
 
-        <UserControl x:Name="logincontrol" Grid.ColumnSpan="4" Grid.Column="0" Grid.Row="1" Grid.RowSpan="3" Visibility="Hidden">
+        <UserControl x:Name="logincontrol" Grid.ColumnSpan="4" Grid.Row="1" Grid.RowSpan="3" Visibility="Visible">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition/>
@@ -104,16 +98,16 @@
                         <RowDefinition/>
                     </Grid.RowDefinitions>
                     <Label x:Name="lbuserPassword" Content="密码："  HorizontalContentAlignment="Right" VerticalContentAlignment="Top" Margin="0"  />
-                    <PasswordBox x:Name="txtPassword" Margin="0,0,0,17" VerticalContentAlignment="Center" Grid.Row="0"
-                                 Grid.Column="1" />
+                    <PasswordBox x:Name="txtPassword" Margin="0,0,0,17" VerticalContentAlignment="Center" Grid.Column="1" />
 
-                    <TextBox x:Name="txtcaptcha"   Margin="50,9,0,10"  Grid.Row="1" Grid.Column="0" Text="请输入验证码" Foreground="Gray" GotFocus="txtcaptcha_GotFocus" LostFocus="txtcaptcha_LostFocus"/>
+                    <TextBox x:Name="txtcaptcha"   Margin="50,9,0,10"  Grid.Row="1" Text="请输入验证码" Foreground="Gray" GotFocus="txtcaptcha_GotFocus" LostFocus="txtcaptcha_LostFocus"/>
                     <Image x:Name="imagecaptcha" Margin="0,9,0,10" Grid.Row="1" Stretch="Fill" PreviewMouseLeftButtonUp="imagecaptcha_PreviewMouseLeftButtonUp" ToolTip="点击刷新验证码" Grid.Column="2" />
                 </Grid>
 
-
+                <Button x:Name="btnlogin" Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="2" Margin="30" Content="登录" Click="btnlogin_Click"/>
             </Grid>
         </UserControl>
-        <!--<Button x:Name="btnlogin" Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="3" Height="20" Content="登录后点我切换到简版操作" Click="btnlogin_Click"/>-->
+        <WebBrowser x:Name="UcWebBrowser" HorizontalAlignment="Left" Height="168" Grid.Row="1" Grid.RowSpan="2" VerticalAlignment="Top" Width="526" Grid.ColumnSpan="4"/>
+
     </Grid>
 </Window>
