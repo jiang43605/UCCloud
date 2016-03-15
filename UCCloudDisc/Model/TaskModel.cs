@@ -17,7 +17,6 @@ namespace UCCloudDisc
         private string _size_fmt;
         private string _type;
         private string _start_time;
-        private string _remain_time;
         private string _task_id;
         private string _status;
         private string _store_type;
@@ -46,7 +45,7 @@ namespace UCCloudDisc
 
         /// <summary>
         /// 资源的name属性
-        /// <summary>
+        /// </summary>
         public string Name
         {
             get { return this._name; }
@@ -54,7 +53,7 @@ namespace UCCloudDisc
         }
         /// <summary>
         /// 资源的size属性
-        /// <summary>
+        /// </summary>
         public long Size
         {
             get { return this._size; }
@@ -62,7 +61,7 @@ namespace UCCloudDisc
         }
         /// <summary>
         /// 资源的size_fmt属性
-        /// <summary>
+        /// </summary>
         public string Size_fmt
         {
             get { return this._size_fmt; }
@@ -70,7 +69,7 @@ namespace UCCloudDisc
         }
         /// <summary>
         /// 资源的type属性
-        /// <summary>
+        /// </summary>
         public string Type
         {
             get { return this._type; }
@@ -78,7 +77,7 @@ namespace UCCloudDisc
         }
         /// <summary>
         /// 资源的start_time属性
-        /// <summary>
+        /// </summary>
         public string Start_time
         {
             get { return this._start_time; }
@@ -86,15 +85,12 @@ namespace UCCloudDisc
         }
         /// <summary>
         /// 资源的remain_time属性
-        /// <summary>
-        public string Remain_time
-        {
-            get { return this._remain_time; }
-            set { this._remain_time = value; }
-        }
+        /// </summary>
+        public string Remain_time { get; set; }
+
         /// <summary>
         /// 资源的task_id属性
-        /// <summary>
+        /// </summary>
         public string Task_id
         {
             get { return this._task_id; }
@@ -102,7 +98,7 @@ namespace UCCloudDisc
         }
         /// <summary>
         /// 资源的status属性
-        /// <summary>
+        /// </summary>
         public string Status
         {
             get { return this._status; }
@@ -110,7 +106,7 @@ namespace UCCloudDisc
         }
         /// <summary>
         /// 资源的store_type属性
-        /// <summary>
+        /// </summary>
         public string Store_type
         {
             get { return this._store_type; }
@@ -118,7 +114,7 @@ namespace UCCloudDisc
         }
         /// <summary>
         /// 资源的lx_open_url属性
-        /// <summary>
+        /// </summary>
         public string Lx_open_url
         {
             get { return this._lx_open_url; }
@@ -126,7 +122,7 @@ namespace UCCloudDisc
         }
         /// <summary>
         /// 资源的status_code属性
-        /// <summary>
+        /// </summary>
         public int Status_code
         {
             get { return this._status_code; }
@@ -134,7 +130,7 @@ namespace UCCloudDisc
         }
         /// <summary>
         /// 资源的percent属性
-        /// <summary>
+        /// </summary>
         public double Percent
         {
             get { return this._percent; }
@@ -142,7 +138,7 @@ namespace UCCloudDisc
         }
         /// <summary>
         /// 资源的downloadurl属性
-        /// <summary>
+        /// </summary>
         public string Downloadurl
         {
             get { return this._downloadurl; }
@@ -150,7 +146,7 @@ namespace UCCloudDisc
         }
         /// <summary>
         /// 资源的renewtaskurl属性
-        /// <summary>
+        /// </summary>
         public string Renewtaskurl
         {
             get { return this._renewtaskurl; }
@@ -158,7 +154,7 @@ namespace UCCloudDisc
         }
         /// <summary>
         /// 资源的fullname属性
-        /// <summary>
+        /// </summary>
         public string Fullname
         {
             get { return this._fullname; }
@@ -166,7 +162,7 @@ namespace UCCloudDisc
         }
         /// <summary>
         /// 资源的refer属性
-        /// <summary>
+        /// </summary>
         public string Refer
         {
             get { return this._refer; }
@@ -182,7 +178,7 @@ namespace UCCloudDisc
         }
         /// <summary>
         /// 资源的errorcode属性
-        /// <summary>
+        /// </summary>
         public string Errorcode
         {
             get { return this._errorcode; }
@@ -198,7 +194,7 @@ namespace UCCloudDisc
         }
         /// <summary>
         /// 资源的expired属性
-        /// <summary>
+        /// </summary>
         public bool Expired
         {
             get { return this._expired; }
@@ -206,7 +202,7 @@ namespace UCCloudDisc
         }
         /// <summary>
         /// 资源的djangoID属性
-        /// <summary>
+        /// </summary>
         public string DjangoID
         {
             get { return this._djangoID; }
@@ -214,7 +210,7 @@ namespace UCCloudDisc
         }
         /// <summary>
         /// 资源的show_save_to_nd属性
-        /// <summary>
+        /// </summary>
         public bool Show_save_to_nd
         {
             get { return this._show_save_to_nd; }
@@ -222,7 +218,7 @@ namespace UCCloudDisc
         }
         /// <summary>
         /// 资源的showOpenVideo属性
-        /// <summary>
+        /// </summary>
         public bool ShowOpenVideo
         {
             get { return this._showOpenVideo; }
@@ -238,7 +234,7 @@ namespace UCCloudDisc
         }
         /// <summary>
         /// 资源的valid_info属性
-        /// <summary>
+        /// </summary>
         public string Valid_info
         {
             get { return this._valid_info; }
@@ -254,7 +250,7 @@ namespace UCCloudDisc
         }
         /// <summary>
         /// 资源的openFileDetailUrl属性
-        /// <summary>
+        /// </summary>
         public string OpenFileDetailUrl
         {
             get { return this._openFileDetailUrl; }
@@ -270,7 +266,7 @@ namespace UCCloudDisc
         }
         /// <summary>
         /// 资源的success属性
-        /// <summary>
+        /// </summary>
         public bool Success
         {
             get { return this._success; }
@@ -278,7 +274,7 @@ namespace UCCloudDisc
         }
         /// <summary>
         /// 资源的rename属性
-        /// <summary>
+        /// </summary>
         public bool Rename
         {
             get { return this._rename; }
