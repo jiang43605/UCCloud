@@ -35,7 +35,7 @@ namespace UC.Windows
             Cef.Initialize();
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
         }
-        private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
             if (e.IsTerminating)
                 MessageBox.Show("发生致命错误，将重启程序！");
@@ -156,10 +156,9 @@ namespace UC.Windows
                 }
 
                 // 执行插件方法
-                try { this._iUcWindowPlugins.ToList().ForEach(o => o.SetLink(this.txtlink)); } catch { }
+                try { this._iUcWindowPlugins.ToList().ForEach(o => o.SetLink(this.txtlink)); } catch {/* ignored */}
 
                 if (this._ucDownload == null) throw new ArgumentNullException("_ucDownload");
-                bool tempbool = this._ucLogin.IsLogin;
                 var msg = this._ucDownload.SetNewTask(this._ucLogin.LoginResultMsg.Token, this.txtlink.Text);
                 this.listBox.Items.Add(msg.Msg);
 
@@ -171,11 +170,9 @@ namespace UC.Windows
                     lists.ForEach(o =>
                     {
                         // 检查是否队列中已经存在，并且完成第一次数据展示
-                        if (this._updataTaskModels.FirstOrDefault(p => p.Task_id == o.Task_id) == null)
-                        {
-                            this._updataTaskModels.Enqueue(o);
-                            this.DisplayDataInListBox(o);
-                        }
+                        if (this._updataTaskModels.FirstOrDefault(p => p.Task_id == o.Task_id) != null) return;
+                        this._updataTaskModels.Enqueue(o);
+                        this.DisplayDataInListBox(o);
                     });
                 }
                 //this.txtlink.Clear();
@@ -195,12 +192,15 @@ namespace UC.Windows
                     // 更新数据
                     var tasks = this._ucDownload.GeTaskModel();
                     taskModel = tasks.FirstOrDefault(o => o.Task_id == taskModel.Task_id);
-                    if (!taskModel.Status.Contains("过期时间") && !taskModel.Status.Contains("已存至网盘") && !taskModel.Failed)
-                        this._updataTaskModels.Enqueue(taskModel);
-                    else taskModel.Status = taskModel.Status.Contains("过期时间") == true ? "离线完成" : taskModel.Status;
+                    if (taskModel != null)
+                    {
+                        if (!taskModel.Status.Contains("过期时间") && !taskModel.Status.Contains("已存至网盘") && !taskModel.Failed)
+                            this._updataTaskModels.Enqueue(taskModel);
+                        else taskModel.Status = taskModel.Status.Contains("过期时间") == true ? "离线完成" : taskModel.Status;
 
-                    // 将数据展示到ListBox上面
-                    this.DisplayDataInListBox(taskModel);
+                        // 将数据展示到ListBox上面
+                        this.DisplayDataInListBox(taskModel);
+                    }
 
                     Thread.Sleep(3000);
                 }
@@ -215,12 +215,12 @@ namespace UC.Windows
         private void DisplayDataInListBox(TaskModel taskModel)
         {
             string msginlistbox = $"[{taskModel.Status}][{taskModel.Size_fmt}][{taskModel.Fullname}]";
-            bool tempbool = this._itemDictionary.ContainsKey(taskModel.Task_id);
+            var tempbool = this._itemDictionary.ContainsKey(taskModel.Task_id);
             this.listBox.Dispatcher.Invoke(() =>
             {
                 if (tempbool)
                 {
-                    int index = this._itemDictionary[taskModel.Task_id];
+                    var index = this._itemDictionary[taskModel.Task_id];
                     this.listBox.Items[index] = msginlistbox;
                 }
                 else
@@ -280,7 +280,7 @@ namespace UC.Windows
 
                 if (!File.Exists("UC.js")) return;
                 var scriptext = File.ReadAllText("UC.js");
-                ((ChromiumWebBrowser) sender).ExecuteScriptAsync(scriptext);
+                ((ChromiumWebBrowser)sender).ExecuteScriptAsync(scriptext);
 
                 this.Dispatcher.BeginInvoke(new Action(() => { btnlogin_Click(null, null); }));
             });
