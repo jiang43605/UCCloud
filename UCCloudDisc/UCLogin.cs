@@ -111,12 +111,10 @@ namespace UCCloudDisc
                 this._httpWeb.EncodingSet = "utf-8";
                 this._httpWeb.AllowAutoRedirect = true;
                 var mianhtml = this._httpWeb.CPostOrGet("http://disk.yun.uc.cn/", HttpMethod.GET).HtmlValue;
-                if (mianhtml.Contains("我的网盘"))
-                {
-                    this._loginResultMsg.MainHtml = mianhtml;
-                    return true;
-                }
-                return false;
+
+                if (!mianhtml.Contains("离线任务")) return false;
+                this._loginResultMsg.MainHtml = mianhtml;
+                return true;
             }
         }
 
